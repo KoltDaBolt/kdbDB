@@ -1,26 +1,56 @@
-TARGET = bin/kdbDB
+# -=-=-=-=-= VARIABLES =-=-=-=-=-
+
+RELEASE_TARGET = bin/kdbDB
+DEBUG_TARGET = bin/kdbDB-debug
 SRC = $(wildcard src/*.c)
 OBJ = $(patsubst src/%.c, obj/%.o, $(SRC))
-GCC = gcc -Wall -Werror
+
+CC = gcc
+CFLAGS_COMMON = -Wall -Werror -Iinclude
+CFLAGS_DEBUG = $(CFLAGS_COMMON) -g -O0 -DDEBUG
+CFLAGS_RELEASE = $(CFLAGS_COMMON) -O2
+
 VALGRIND = valgrind --leak-check=full
 
-run: clean default
-	./$(TARGET)
+# -=-=-=-=-= RUN TARGETS =-=-=-=-=-
 
-valgrind: clean default
-	$(VALGRIND) ./$(TARGET)
+default: clean RELEASE
+	./$(RELEASE_TARGET)
 
-default: $(TARGET)
+debug: clean DEBUG
+	./$(DEBUG_TARGET)
 
-$(TARGET): $(OBJ)
-	$(GCC) -o $@ $?
+valgrind: clean RELEASE
+	$(VALGRIND) ./$(RELEASE_TARGET)
 
-obj/%.o: src/%.c
-	$(GCC) -c $< -o $@ -Iinclude
+debugvalgrind: clean DEBUG
+	$(VALGRIND) ./$(DEBUG_TARGET)
 
 clean:
 	rm -f obj/*.o bin/*
 	touch obj/.gitkeep bin/.gitkeep
+
+# -=-=-=-=-= BUILD TARGETS =-=-=-=-=-
+
+RELEASE: CFLAGS = $(CFLAGS_RELEASE)
+RELEASE: $(RELEASE_TARGET)
+
+DEBUG: CFLAGS = $(CFLAGS_DEBUG)
+DEBUG: $(DEBUG_TARGET)
+
+$(RELEASE_TARGET): $(OBJ)
+	$(CC) $(CFLAGS) -o $@ $^
+
+$(DEBUG_TARGET): $(OBJ)
+	$(CC) $(CFLAGS) -o $@ $^
+
+obj/%.o: src/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# make 					=> builds and runs release version
+# make debug 			=> builds and runs debug version
+# make valgrind			=> builds and runs release version under valgrind
+# make debugvalgrind 	=> builds and runs debug version under valgrind
 
 # $< = a single file given as a target
 # $@ = the target of a rule

@@ -19,6 +19,16 @@ void print_logo(void) {
     printf("\n");
 }
 
+void print_logo_debug(void) {
+    printf(" _       _ _     ____  ____            _      _                 \n");
+    printf("| | ____| | |__ |  _ \\| __ )        __| | ___| |__  _   _  __ _ \n");
+    printf("| |/ / _` | '_ \\| | | |  _ \\ _____ / _` |/ _ \\ '_ \\| | | |/ _` |\n");
+    printf("|   < (_| | |_) | |_| | |_) |_____| (_| |  __/ |_) | |_| | (_| |\n");
+    printf("|_|\\_\\__,_|_.__/|____/|____/       \\__,_|\\___|_.__/ \\__,_|\\__, |\n");
+    printf("                                                          |___/ \n");
+    printf("\n");
+}
+
 int main(int argc, char** argv) {
     if (argc > 1) {
         log_error(true, true, "This program does not accept command line arguments");
@@ -29,7 +39,13 @@ int main(int argc, char** argv) {
     InputStatus userInputStatus;
 
     printf(CLEAR_SCREEN CURSOR_START);
-    print_logo();
+
+    #ifdef DEBUG
+        print_logo_debug();
+    #else
+        print_logo();
+    #endif
+
     for (;;) {
         printf(COLOR_BRIGHT_BLUE "kdbDB" COLOR_WHITE "@" COLOR_BRIGHT_GREEN "none" COLOR_WHITE "> ");
         
@@ -40,12 +56,6 @@ int main(int argc, char** argv) {
         } else if (userInputStatus != INPUT_OK) {
             continue;
         }
-
-        printf("\n");
-        printf("Size of user input buffer: %zu\n", sizeof(userInput));
-        printf("Length of actual input:    %zu\n", strlen(userInput));
-        printf("User Input: %s\n", userInput);
-        printf("\n");
     }
 
     return EXIT_SUCCESS;

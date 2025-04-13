@@ -26,5 +26,14 @@ InputStatus get_user_input(char* inputBuffer) {
 
     inputBuffer[strcspn(inputBuffer, "\n")] = '\0';
 
+    #ifdef DEBUG
+        printf("\n");
+        printf("-=-=-=-=-= input.c:get_user_input =-=-=-=-=-\n");
+        printf("Size of user input buffer: %u\n", MAX_QUERY_LENGTH);
+        printf("Length of actual input:    %zu\n", strlen(inputBuffer));
+        printf("User Input: %s\n", inputBuffer);
+        printf("\n");
+    #endif
+
     return INPUT_OK;
 }

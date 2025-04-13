@@ -11,8 +11,6 @@
 #define CLEAR_SCREEN        "\033[2J"
 #define CURSOR_START        "\033[H"
 
-#define MAX_QUERY_LENGTH 1000
-
 #include <stdbool.h>
 
 void log_error(bool marginTop, bool marginBottom, const char* format, ...);
