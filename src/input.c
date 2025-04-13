@@ -2,9 +2,10 @@
 #include <string.h>
 #include <stddef.h>
 
+#include "common.h"
 #include "input.h"
 
-InputStatus get_user_input(char* inputBuffer, size_t size) {
+InputStatus get_user_input(char* inputBuffer) {
     if (fgets(inputBuffer, MAX_QUERY_LENGTH, stdin) == NULL) {
         if (feof(stdin)) {
             return INPUT_EOF;
