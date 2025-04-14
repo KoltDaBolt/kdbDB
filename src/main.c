@@ -4,6 +4,7 @@
 
 #include "common.h"
 #include "input.h"
+#include "error.h"
 
 typedef enum {
     EXIT_SUCCESS = 0,
@@ -29,12 +30,32 @@ void print_logo_debug(void) {
     printf("\n");
 }
 
+size_t visible_length(const char* str) {
+    size_t len = 0;
+    while (*str) {
+        if (*str == '\033' && *(str + 1) == '[') {
+            str += 2;
+            while (*str && *str != 'm') {
+                str++;
+            }
+            if (*str == 'm') str++;
+        } else {
+            len++;
+            str++;
+        }
+    }
+
+    return len;
+}
+
 int main(int argc, char** argv) {
     if (argc > 1) {
         log_error(true, true, "This program does not accept command line arguments");
         return EXIT_INVALID_ARGS;
     }
 
+    char* prompt = COLOR_BRIGHT_BLUE "kdbDB" COLOR_WHITE "@" COLOR_BRIGHT_GREEN "none" COLOR_WHITE "> ";
+    size_t prompt_length = visible_length(prompt);
     char userInput[MAX_QUERY_LENGTH];
     InputStatus userInputStatus;
 
@@ -47,9 +68,9 @@ int main(int argc, char** argv) {
     #endif
 
     for (;;) {
-        printf(COLOR_BRIGHT_BLUE "kdbDB" COLOR_WHITE "@" COLOR_BRIGHT_GREEN "none" COLOR_WHITE "> ");
+        printf("%s", prompt);
         
-        userInputStatus = get_user_input(userInput);
+        userInputStatus = get_user_input(userInput, prompt_length);
         if (userInputStatus == INPUT_EOF) {
             printf("\n\nEOF\n\n");
             break;

@@ -47,11 +47,6 @@ $(DEBUG_TARGET): $(OBJ)
 obj/%.o: src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# make 					=> builds and runs release version
-# make debug 			=> builds and runs debug version
-# make valgrind			=> builds and runs release version under valgrind
-# make debugvalgrind 	=> builds and runs debug version under valgrind
-
 # $< = a single file given as a target
 # $@ = the target of a rule
 # $? = a list of all input files given as a target

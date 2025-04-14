@@ -3,6 +3,7 @@
 #include <stdarg.h>
 
 #include "common.h"
+#include "error.h"
 
 void log_error(bool marginTop, bool marginBottom, const char* format, ...) {
     if (marginTop) printf("\n");
