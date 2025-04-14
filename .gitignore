@@ -1,0 +1,4 @@
+bin/kdbDB
+bin/kdbDB-debug
+
+obj/*.o
