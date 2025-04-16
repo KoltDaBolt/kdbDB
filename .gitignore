@@ -1,3 +1,5 @@
+.vscode
+
 bin/kdbDB
 bin/kdbDB-debug
 

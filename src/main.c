@@ -4,6 +4,7 @@
 
 #include "common.h"
 #include "input.h"
+#include "scanner.h"
 #include "error.h"
 
 typedef enum {
@@ -56,6 +57,7 @@ int main(int argc, char** argv) {
 
     char* prompt = COLOR_BRIGHT_BLUE "kdbDB" COLOR_WHITE "@" COLOR_BRIGHT_GREEN "none" COLOR_WHITE "> ";
     size_t prompt_length = visible_length(prompt);
+
     char userInput[MAX_QUERY_LENGTH];
     InputStatus userInputStatus;
 
@@ -67,16 +69,37 @@ int main(int argc, char** argv) {
         print_logo();
     #endif
 
-    for (;;) {
+    while (true) {
         printf("%s", prompt);
         
-        userInputStatus = get_user_input(userInput, prompt_length);
+        userInputStatus = getUserInput(userInput, prompt_length);
         if (userInputStatus == INPUT_EOF) {
             printf("\n\nEOF\n\n");
             break;
         } else if (userInputStatus != INPUT_OK) {
             continue;
         }
+
+        initScanner(userInput);
+
+        #ifdef DEBUG
+            printf("\n");
+            printf("-=-=-=-=-= main.c:scanToken() =-=-=-=-=-\n");
+        #endif
+
+        for (;;) {
+            Token token = scanToken();
+
+            #ifdef DEBUG
+                printf("%2d %-20s %.*s\n", token.column, tokenNames[token.type], token.length, token.start);
+            #endif
+
+            if (token.type == TOKEN_END) break;
+        }
+
+        #ifdef DEBUG
+            printf("\n");
+        #endif
     }
 
     return EXIT_SUCCESS;

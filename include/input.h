@@ -12,6 +12,6 @@ typedef enum {
     INPUT_EOF,
 } InputStatus;
 
-InputStatus get_user_input(char* inputBuffer, size_t prompt_length);
+InputStatus getUserInput(char* inputBuffer, size_t prompt_length);
 
 #endif
