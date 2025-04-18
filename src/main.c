@@ -2,11 +2,13 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include "common.h"
+#include "terminal.h"
 #include "input.h"
 #include "scanner.h"
 #include "parser.h"
 #include "error.h"
+#include "chunk.h"
+#include "value.h"
 #include "enum_utils.h"
 
 typedef enum {
@@ -137,6 +139,25 @@ int main(int argc, char** argv) {
         #endif
 
         freeQuery(&query);
+
+        Chunk chunk;
+        Value val1 = NUMBER_VAL(1.2);
+        Value val2 = BOOL_VAL(true);
+        initChunk(&chunk);
+        int constantIndex = addConstant(&chunk, val1);
+        writeChunk(&chunk, OP_CONSTANT);
+        writeChunk(&chunk, constantIndex);
+        constantIndex = addConstant(&chunk, val2);
+        writeChunk(&chunk, OP_CONSTANT);
+        writeChunk(&chunk, constantIndex);
+        writeChunk(&chunk, OP_RETURN);
+        
+        #ifdef DEBUG
+        disassembleChunk(&chunk, "Resulting Chunk");
+        printf("\n");
+        #endif
+
+        freeChunk(&chunk);
     }
 
     return EXIT_SUCCESS;

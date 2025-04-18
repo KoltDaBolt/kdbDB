@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stdarg.h>
 
-#include "common.h"
+#include "terminal.h"
 #include "error.h"
 
 void log_error(bool marginTop, bool marginBottom, const char* format, ...) {
