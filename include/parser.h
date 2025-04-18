@@ -2,23 +2,7 @@
 #define PARSER_H
 
 #include "token.h"
-
-typedef enum {
-    QUERY_TYPE_CLEAR,
-    QUERY_TYPE_LIST_DATABASE,
-    QUERY_TYPE_CREATE_DATABASE
-} QueryType;
-
-typedef struct {
-    const char* dbname;
-} CreateDatabase;
-
-typedef struct {
-    QueryType type;
-    union {
-        CreateDatabase createDbQuery;
-    } data;
-} Query;
+#include "query.h"
 
 typedef enum {
     PARSER_STATE_READY = 0,

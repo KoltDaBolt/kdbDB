@@ -8,7 +8,7 @@
 #include "parser.h"
 #include "error.h"
 #include "chunk.h"
-#include "value.h"
+#include "compiler.h"
 #include "enum_utils.h"
 
 typedef enum {
@@ -138,19 +138,17 @@ int main(int argc, char** argv) {
             printf("\n");
         #endif
 
-        freeQuery(&query);
-
         Chunk chunk;
-        Value val1 = NUMBER_VAL(1.2);
-        Value val2 = BOOL_VAL(true);
         initChunk(&chunk);
-        int constantIndex = addConstant(&chunk, val1);
-        writeChunk(&chunk, OP_CONSTANT);
-        writeChunk(&chunk, constantIndex);
-        constantIndex = addConstant(&chunk, val2);
-        writeChunk(&chunk, OP_CONSTANT);
-        writeChunk(&chunk, constantIndex);
-        writeChunk(&chunk, OP_RETURN);
+        CompilerStatus compileStatus;
+        compileStatus = compile(query, &chunk);
+        if (compileStatus == COMPILER_STATUS_ERROR) {
+            log_error(true, true, "Failed to compile bytecode");
+            freeQuery(&query);
+            freeChunk(&chunk);
+            continue;
+        }
+        freeQuery(&query);
         
         #ifdef DEBUG
         disassembleChunk(&chunk, "Resulting Chunk");
