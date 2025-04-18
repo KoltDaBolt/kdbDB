@@ -2,35 +2,6 @@
 
 #include "scanner.h"
 
-#ifdef DEBUG
-    const char* tokenNames[] = {
-        "TOKEN_LEFT_PAREN",
-        "TOKEN_RIGHT_PAREN",
-        "TOKEN_COMMA",
-        "TOKEN_PLUS",
-        "TOKEN_MINUS",
-        "TOKEN_STAR",
-        "TOKEN_SLASH",
-        "TOKEN_MOD",
-        "TOKEN_SEMICOLON",
-        "TOKEN_EQUAL",
-        "TOKEN_GREATER",
-        "TOKEN_GREATER_EQUAL",
-        "TOKEN_LESS",
-        "TOKEN_LESS_EQUAL",
-        "TOKEN_IDENTIFIER",
-        "TOKEN_STRING",
-        "TOKEN_NUMBER",
-        "TOKEN_CREATE",
-        "TOKEN_CLEAR",
-        "TOKEN_DATABASE",
-        "TOKEN_LIST",
-        "TOKEN_USE",
-        "TOKEN_END",
-        "TOKEN_ERROR"
-    };
-#endif
-
 Scanner scanner;
 
 void initScanner(const char* query) {

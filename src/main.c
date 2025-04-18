@@ -5,7 +5,9 @@
 #include "common.h"
 #include "input.h"
 #include "scanner.h"
+#include "parser.h"
 #include "error.h"
+#include "enum_utils.h"
 
 typedef enum {
     EXIT_SUCCESS = 0,
@@ -81,25 +83,60 @@ int main(int argc, char** argv) {
         }
 
         initScanner(userInput);
-
-        #ifdef DEBUG
-            printf("\n");
-            printf("-=-=-=-=-= main.c:scanToken() =-=-=-=-=-\n");
-        #endif
+        initParser();
+        ParserStatus parserStatus;
+        Query query = {0};
+        bool fatalError = false;
 
         for (;;) {
             Token token = scanToken();
 
             #ifdef DEBUG
-                printf("%2d %-20s %.*s\n", token.column, tokenNames[token.type], token.length, token.start);
+                printf("\n\n\n");
+                printf("-=-=-=-=-= main.c:scanToken() =-=-=-=-=-\n");
+                printf("%2d %-20s %.*s\n", token.column, enumToString(ENUM_TOKEN_TYPE, token.type), token.length, token.start);
             #endif
 
             if (token.type == TOKEN_END) break;
+
+            parserStatus = parseToken(&query, token);
+            if (parserStatus == PARSER_STATUS_SYNTAX_ERROR) {
+                log_error(true, true, "Invalid syntax at column %d (%.*s)", token.column, token.length, token.start);
+                fatalError = true;
+                break;
+            } else if (parserStatus == PARSER_STATUS_ALLOCATION_FAILED) {
+                log_error(true, true, "Parser failed to allocate memory");
+                fatalError = true;
+                break;
+            }
+        }
+
+        if (fatalError) {
+            freeQuery(&query);
+            continue;
         }
 
         #ifdef DEBUG
             printf("\n");
+            printf("-=-=-=-=-= main.c : Query after parseToken() =-=-=-=-=-\n");
+            switch (query.type) {
+                case QUERY_TYPE_CLEAR:
+                    printf("Query Type: CLEAR\n");
+                    break;
+                case QUERY_TYPE_LIST_DATABASE:
+                    printf("Query Type: LIST_DATABASE\n");
+                    break;
+                case QUERY_TYPE_CREATE_DATABASE:
+                    printf("Query Type: CREATE_DATABASE\n");
+                    printf("Database Name: %s\n", query.data.createDbQuery.dbname);
+                    break;
+                default:
+                    printf("Unknown Query Type\n");
+            }
+            printf("\n");
         #endif
+
+        freeQuery(&query);
     }
 
     return EXIT_SUCCESS;

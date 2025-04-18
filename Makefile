@@ -7,8 +7,8 @@ OBJ = $(patsubst src/%.c, obj/%.o, $(SRC))
 
 CC = gcc
 CFLAGS_COMMON = -Wall -Werror -Iinclude
-CFLAGS_DEBUG = $(CFLAGS_COMMON) -g -O0 -DDEBUG
-CFLAGS_RELEASE = $(CFLAGS_COMMON) -O2
+CFLAGS_DEBUG = $(CFLAGS_COMMON) -g -DDEBUG
+CFLAGS_RELEASE = $(CFLAGS_COMMON)
 
 VALGRIND = valgrind --leak-check=full
 

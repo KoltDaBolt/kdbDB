@@ -10,7 +10,7 @@ InputStatus getUserInput(char* inputBuffer, size_t prompt_length) {
 
     while (1) {
         if (line_offset > 0) {
-            printf("%*s ", (int)prompt_length, "...> ");
+            printf("%*s ", (int)prompt_length - 1, "...>");
         }
 
         if (fgets(inputBuffer + line_offset, MAX_QUERY_LENGTH - line_offset, stdin) == NULL) {
@@ -50,7 +50,7 @@ InputStatus getUserInput(char* inputBuffer, size_t prompt_length) {
         printf("-=-=-=-=-= input.c:getUserInput() =-=-=-=-=-\n");
         printf("Size of user input buffer: %u\n", MAX_QUERY_LENGTH);
         printf("Length of actual input:    %zu\n", strlen(inputBuffer));
-        printf("User Input: %s\n", inputBuffer);
+        printf("User Input: %s", inputBuffer);
         printf("\n");
     #endif
 
