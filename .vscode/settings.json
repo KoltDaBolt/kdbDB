@@ -1,8 +1,0 @@
-{
-    "files.associations": {
-        "common.h": "c",
-        "stdbool.h": "c",
-        "scanner.h": "c",
-        "terminal.h": "c"
-    }
-}

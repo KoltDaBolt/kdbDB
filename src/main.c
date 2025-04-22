@@ -9,6 +9,7 @@
 #include "error.h"
 #include "chunk.h"
 #include "compiler.h"
+#include "vm.h"
 #include "enum_utils.h"
 
 typedef enum {
@@ -64,6 +65,14 @@ int main(int argc, char** argv) {
 
     char userInput[MAX_QUERY_LENGTH];
     InputStatus userInputStatus;
+    ParserStatus parserStatus;
+    Query query = {0};
+    bool fatalError = false;
+    Token token;
+    Chunk chunk;
+    initChunk(&chunk);
+    CompilerStatus compileStatus;
+    VMStatus vmstatus;
 
     printf(CLEAR_SCREEN CURSOR_START);
 
@@ -86,12 +95,9 @@ int main(int argc, char** argv) {
 
         initScanner(userInput);
         initParser();
-        ParserStatus parserStatus;
-        Query query = {0};
-        bool fatalError = false;
 
         for (;;) {
-            Token token = scanToken();
+            token = scanToken();
 
             #ifdef DEBUG
                 printf("\n\n\n");
@@ -138,9 +144,6 @@ int main(int argc, char** argv) {
             printf("\n");
         #endif
 
-        Chunk chunk;
-        initChunk(&chunk);
-        CompilerStatus compileStatus;
         compileStatus = compile(query, &chunk);
         if (compileStatus == COMPILER_STATUS_ERROR) {
             log_error(true, true, "Failed to compile bytecode");
@@ -154,6 +157,11 @@ int main(int argc, char** argv) {
         disassembleChunk(&chunk, "Resulting Chunk");
         printf("\n");
         #endif
+
+        vmstatus = run(&chunk);
+        if (vmstatus == VM_RUNTIME_ERROR) {
+            log_error(true, true, "Runtime Error");
+        }
 
         freeChunk(&chunk);
     }
